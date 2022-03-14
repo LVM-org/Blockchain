@@ -34,7 +34,7 @@ impl Processor {
     fn process_create_media(
         accounts: &[AccountInfo],
         distributor_fee: u64,
-        price_per_minute: f64,
+        price_per_minute: u64,
     ) -> ProgramResult {
         let account_info_iter = &mut accounts.iter();
         let author = next_account_info(account_info_iter)?;

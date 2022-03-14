@@ -15,7 +15,7 @@ pub enum LVMInstruction {
     /// 5. `[]` The NFT program
     CreateMedia {
         /// The price per minutes in LVM token
-        price_per_minute: f64,
+        price_per_minute: u64,
         /// The sales percentage fee (1 - 100) given to distibutors for access time sales
         distributor_fee: u64,
     },
@@ -36,11 +36,11 @@ impl LVMInstruction {
         })
     }
 
-    fn unpack_price_per_minute(input: &[u8]) -> Result<f64, ProgramError> {
+    fn unpack_price_per_minute(input: &[u8]) -> Result<u64, ProgramError> {
         let price = input
             .get(..8)
             .and_then(|slice| slice.try_into().ok())
-            .map(f64::from_le_bytes)
+            .map(u64::from_le_bytes)
             .ok_or(InvalidInstruction)?;
         msg!("Unpack price per minutes : {}", price);
         Ok(price)

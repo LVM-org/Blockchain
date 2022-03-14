@@ -8,7 +8,7 @@ use arrayref::{array_mut_ref, array_ref, array_refs, mut_array_refs};
 
 pub struct Media {
     pub author_pubkey: Pubkey,
-    pub price_per_minute: f64,
+    pub price_per_minute: u64,
     pub distributor_fee: u64,
     pub nft_token: Pubkey,
     pub nft_account_pubkey: Pubkey,
@@ -25,7 +25,7 @@ impl Pack for Media {
 
         Ok(Media {
             author_pubkey: Pubkey::new_from_array(*author_pubkey),
-            price_per_minute: f64::from_le_bytes(*price_per_minute),
+            price_per_minute: u64::from_le_bytes(*price_per_minute),
             distributor_fee: u64::from_le_bytes(*distributor_fee),
             nft_token: Pubkey::new_from_array(*nft_token),
             nft_account_pubkey: Pubkey::new_from_array(*nft_account_pubkey),
