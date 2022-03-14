@@ -17,6 +17,7 @@ impl Processor {
         accounts: &[AccountInfo],
         instruction_data: &[u8],
     ) -> ProgramResult {
+        msg!("Calling Instructions: {:?}", instruction_data);
         let instruction = LVMInstruction::unpack(instruction_data)?;
 
         match instruction {
