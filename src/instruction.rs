@@ -1,4 +1,4 @@
-use solana_program::program_error::ProgramError;
+use solana_program::{msg, program_error::ProgramError};
 use std::convert::TryInto;
 
 use crate::error::LVMError::InvalidInstruction;
@@ -25,6 +25,8 @@ impl LVMInstruction {
     /// Unpacks a byte buffer into a [LVMInstruction](enum.LVMInstruction.html).
     pub fn unpack(input: &[u8]) -> Result<Self, ProgramError> {
         let (tag, rest) = input.split_first().ok_or(InvalidInstruction)?;
+
+        msg!("Unpack Intructions");
         Ok(match tag {
             0 => Self::CreateMedia {
                 price_per_minute: Self::unpack_price_per_minute(rest)?,
@@ -40,6 +42,7 @@ impl LVMInstruction {
             .and_then(|slice| slice.try_into().ok())
             .map(f64::from_le_bytes)
             .ok_or(InvalidInstruction)?;
+        msg!("Unpack price per minutes : {}", price);
         Ok(price)
     }
 
@@ -49,6 +52,7 @@ impl LVMInstruction {
             .and_then(|slice| slice.try_into().ok())
             .map(u64::from_le_bytes)
             .ok_or(InvalidInstruction)?;
+        msg!("Unpack percentage fee minutes : {}", fee_percentage);
         Ok(fee_percentage)
     }
 }
