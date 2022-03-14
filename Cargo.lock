@@ -533,7 +533,7 @@ dependencies = [
 ]
 
 [[package]]
-name = "lvm1"
+name = "lvm2"
 version = "0.1.0"
 dependencies = [
  "arrayref",
