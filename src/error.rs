@@ -10,9 +10,15 @@ pub enum LVMError {
     /// Not Rent Exempt
     #[error("Not Rent Exempt")]
     NotRentExempt,
-    /// Expected Amount Mismatch
-    #[error("Expected Amount Mismatch")]
-    ExpectedAmountMismatch,
+    /// Insufficient Token Balance
+    #[error("Insufficient Token Balance")]
+    InsufficientTokenBalance,
+    /// Access Time Cannot Be Reduce
+    #[error("Access Time Cannot Be Reduce")]
+    AccessTimeCannotReduce,
+    /// Amount Overflow
+    #[error("Amount Overflow")]
+    AmountOverflow,
 }
 
 impl From<LVMError> for ProgramError {

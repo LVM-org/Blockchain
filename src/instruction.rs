@@ -1,4 +1,4 @@
-use solana_program::{msg, program_error::ProgramError};
+use solana_program::program_error::ProgramError;
 use std::convert::TryInto;
 
 use crate::error::LVMError::InvalidInstruction;
@@ -19,40 +19,72 @@ pub enum LVMInstruction {
         /// The sales percentage fee (1 - 100) given to distibutors for access time sales
         distributor_fee: u64,
     },
+    ///
+    ///
+    /// Purchase Access Time:
+    ///
+    /// 0. `[signer]` The payer system account
+    /// 1. `[signer]` Buyer main account
+    /// 2. `[writable]` The LVM program account that would hold the purchased time data
+    /// 3. `[]` Media Program account
+    /// 4. `[]` Author LVM token associated account.
+    /// 5. `[]` Distributor LVM token associated account
+    /// 6. `[]` Buyer LVM token associated account
+    /// 7. `[]` The rent sysvar
+    /// 8. `[]` The LVM token
+    PurchaseAccessTime {
+        /// Total time in minutes to purchase
+        time_in_minute: u64,
+    },
+    ///
+    ///
+    /// Update Access Time:
+    ///
+    /// 0. `[signer]` The payer system account
+    /// 1. `[writable]` The LVM program account that would hold the purchased time data
+    /// 2. `[]` The rent sysvar
+    UpdateAccessTime {
+        /// present access time
+        access_time: u64,
+    },
 }
 
 impl LVMInstruction {
     /// Unpacks a byte buffer into a [LVMInstruction](enum.LVMInstruction.html).
     pub fn unpack(input: &[u8]) -> Result<Self, ProgramError> {
         let (tag, rest) = input.split_first().ok_or(InvalidInstruction)?;
-
-        msg!("Unpack Intructions");
         Ok(match tag {
             0 => Self::CreateMedia {
-                price_per_minute: Self::unpack_price_per_minute(rest)?,
-                distributor_fee: Self::unpack_distributor_fee(rest)?,
+                price_per_minute: Self::unpack_integer(&rest, &1)?,
+                distributor_fee: Self::unpack_integer(&rest, &2)?,
+            },
+            1 => Self::PurchaseAccessTime {
+                time_in_minute: Self::unpack_integer(&rest, &1)?,
+            },
+            2 => Self::UpdateAccessTime {
+                access_time: Self::unpack_integer(&rest, &1)?,
             },
             _ => return Err(InvalidInstruction.into()),
         })
     }
 
-    fn unpack_price_per_minute(input: &[u8]) -> Result<u64, ProgramError> {
-        let price = input
-            .get(..8)
-            .and_then(|slice| slice.try_into().ok())
-            .map(u64::from_le_bytes)
-            .ok_or(InvalidInstruction)?;
-        msg!("Unpack price per minutes : {}", price);
-        Ok(price)
-    }
+    fn unpack_integer(input: &[u8], position: &u32) -> Result<u64, ProgramError> {
+        let data;
 
-    fn unpack_distributor_fee(input: &[u8]) -> Result<u64, ProgramError> {
-        let fee_percentage = input
-            .get(9..8)
+        match position {
+            1 => {
+                data = input.get(..8);
+            }
+            2 => {
+                data = input.get(8..16);
+            }
+            _ => return Err(InvalidInstruction.into()),
+        }
+
+        let final_integer = data
             .and_then(|slice| slice.try_into().ok())
             .map(u64::from_le_bytes)
             .ok_or(InvalidInstruction)?;
-        msg!("Unpack percentage fee minutes : {}", fee_percentage);
-        Ok(fee_percentage)
+        Ok(final_integer)
     }
 }
