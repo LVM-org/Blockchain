@@ -24,12 +24,12 @@ pub enum LVMInstruction {
     /// Purchase Access Time:
     ///
     /// 0. `[signer]` The payer system account
-    /// 1. `[signer]` Buyer main account
+    /// 1. `[signer, writable]` Buyer main account
     /// 2. `[writable]` The LVM program account that would hold the purchased time data
     /// 3. `[]` Media Program account
-    /// 4. `[]` Author LVM token associated account.
-    /// 5. `[]` Distributor LVM token associated account
-    /// 6. `[]` Buyer LVM token associated account
+    /// 4. `[writable]` Author LVM token associated account.
+    /// 5. `[writable]` Distributor LVM token associated account
+    /// 6. `[writable]` Buyer LVM token associated account
     /// 7. `[]` The rent sysvar
     /// 8. `[]` The LVM token
     PurchaseAccessTime {

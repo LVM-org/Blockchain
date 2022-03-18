@@ -1,7 +1,6 @@
 use solana_program::{
     account_info::{next_account_info, AccountInfo},
     entrypoint::ProgramResult,
-    msg,
     program::invoke,
     program_error::ProgramError,
     program_pack::Pack,
@@ -24,7 +23,6 @@ impl Processor {
         accounts: &[AccountInfo],
         instruction_data: &[u8],
     ) -> ProgramResult {
-        msg!("Calling Instructions: {:?}", instruction_data);
         let instruction = LVMInstruction::unpack(instruction_data)?;
 
         match instruction {
